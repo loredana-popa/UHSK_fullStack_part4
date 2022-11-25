@@ -100,3 +100,30 @@ describe('favorite blog', () => {
         expect(result).toEqual(listWithManyBlogs[2] || listWithManyBlogs[5] )
     })
 })
+
+describe('most blogs', () => {
+
+    test('when list is empty, print "there are no saved blogs"', () => {
+        const result = listHelper.mostBlogs(listWithNoBlogs)
+        expect(result).toMatch('there are no saved blogs')
+    })
+
+    test('when list has many blogs and many top favorites, return one of them', () => {
+        const result = listHelper.mostBlogs(listWithManyBlogs)
+        expect(result).toEqual({author: 'Robert C. Martin', blogs: 3})
+    })
+})
+
+describe('most likes', () => {
+
+    test('when list is empty, print "there are no saved blogs"', () => {
+        const result = listHelper.mostLikes(listWithNoBlogs)
+        expect(result).toMatch('there are no saved blogs')
+    })
+
+//     test('when list has many blogs and many top total likes, return one of them', () => {
+//         const result = listHelper.mostLikes(listWithManyBlogs)
+//         console.log('result of most likes is', result)
+//         expect(result).toEqual({author: 'Edsger W. Dijkstra', likes: 22})
+//     })
+})
