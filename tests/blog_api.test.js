@@ -1,34 +1,20 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
 
-const initialBlogs = [
-    {
-        _id: '5a422a851b54a676234d17f7',
-        title: 'React patterns',
-        author: 'Michael Chan',
-        url: 'https://reactpatterns.com/',
-        likes: 7,
-        __v: 0
-    },
-    {
-        _id: '5a422aa71b54a676234d17f8',
-        title: 'Go To Statement Considered Harmful',
-        author: 'Edsger W. Dijkstra',
-        url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-        likes: 5,
-        __v: 0
-    },
-]
-
 beforeEach(async () => {
     await Blog.deleteMany({})
-    let blogObject = new Blog(initialBlogs[0])
-    await blogObject.save()
-    blogObject = new Blog(initialBlogs[1])
-    await blogObject.save()
+    console.log('cleared')
+
+    helper.initialBlogs.forEach(async (blog) => {
+        let blogObject = new Blog(blog)
+        await blogObject.save()
+        console.log('saved')
+    })
+    console.log('done')
 })
 
 test('blogs are returned as json', async () => {
@@ -41,7 +27,7 @@ test('blogs are returned as json', async () => {
 test('all blogs are returned', async () => {
     const response = await api.get('/api/blogs')
   
-    expect(response.body).toHaveLength(initialBlogs.length)
+    expect(response.body).toHaveLength(helper.initialBlogs.length)
 })
 
 test('the unique identifier property of the blog posts is named id', async () => {
@@ -67,9 +53,9 @@ describe('create a new blog post', () => {
             .expect(201)
             .expect('Content-Type', /application\/json/)
     
-        const response = await api.get('/api/blogs')
+        const blogsAtEnd = await helper.blogsInDb()
     
-        expect(response.body).toHaveLength(initialBlogs.length + 1)
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
     })
 
     test('set likes to value 0,if missing', async () => {
@@ -92,9 +78,9 @@ describe('create a new blog post', () => {
             .expect(201)
             .expect('Content-Type', /application\/json/)
     
-        const response = await api.get('/api/blogs')
+        const blogsAtEnd = await helper.blogsInDb()
 
-        expect(response.body).toEqual(
+        expect(blogsAtEnd).toEqual(
             expect.arrayContaining([
                 expect.objectContaining(expectedBlog)]))
     })
@@ -110,9 +96,9 @@ describe('create a new blog post', () => {
             .send(newBlog)
             .expect(400)
 
-        const response = await api.get('/api/blogs')
+        const blogsAtEnd = await helper.blogsInDb()
 
-        expect(response.body).toHaveLength(initialBlogs.length)   
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)   
     })
 }) 
 
