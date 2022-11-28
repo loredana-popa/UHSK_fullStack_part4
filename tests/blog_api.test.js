@@ -44,6 +44,35 @@ test('all blogs are returned', async () => {
     expect(response.body).toHaveLength(initialBlogs.length)
 })
 
+test('the unique identifier property of the blog posts is named id', async () => {
+    const response = await api.get('/api/blogs')
+    // console.log('response is', response.body.toJSON())
+    const body = response.body
+  
+    expect(body).toBeDefined()
+})
+
+test('create a new blog post', async () => {
+    const newBlog = {
+        title: 'Create a new blog',
+        author: 'Loredana',
+        url : 'http:/www.website.com',
+        likes: 0,
+    }
+
+    await api   
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+
+    expect(response.body).toHaveLength(initialBlogs.length + 1)
+})
+
+    
+
 afterAll(() => {
     mongoose.connection.close()
 })
