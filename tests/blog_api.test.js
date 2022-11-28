@@ -52,24 +52,56 @@ test('the unique identifier property of the blog posts is named id', async () =>
     expect(body).toBeDefined()
 })
 
-test('create a new blog post', async () => {
-    const newBlog = {
-        title: 'Create a new blog',
-        author: 'Loredana',
-        url : 'http:/www.website.com',
-        likes: 0,
-    }
+describe('create a new blog post', () => {
+    test('a blog can be added', async () => {
+        const newBlog = {
+            title: 'Create a new blog',
+            author: 'Loredana',
+            url : 'http:/www.website.com',
+            likes: 0,
+        }
+    
+        await api   
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+    
+        const response = await api.get('/api/blogs')
+    
+        expect(response.body).toHaveLength(initialBlogs.length + 1)
+    })
 
-    await api   
-        .post('/api/blogs')
-        .send(newBlog)
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
+    test('set likes to value 0,if missing', async () => {
+        const newBlog = {
+            title: ' If the likes property is missing from the request, it will default to the value 0.',
+            author: 'Loredana',
+            url : 'http:/www.website.com',
+        }
 
-    const response = await api.get('/api/blogs')
+        const expectedBlog = {
+            title: ' If the likes property is missing from the request, it will default to the value 0.',
+            author: 'Loredana',
+            url : 'http:/www.website.com',
+            likes: 0,
+        }
 
-    expect(response.body).toHaveLength(initialBlogs.length + 1)
+        
+        await api   
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+    
+        const response = await api.get('/api/blogs')
+        expect(response.body).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining(expectedBlog)]))
+    })
+
 })
+
+
 
     
 
