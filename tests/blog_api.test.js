@@ -46,7 +46,7 @@ test('all blogs are returned', async () => {
 
 test('the unique identifier property of the blog posts is named id', async () => {
     const response = await api.get('/api/blogs')
-    // console.log('response is', response.body.toJSON())
+
     const body = response.body
   
     expect(body).toBeDefined()
@@ -85,7 +85,6 @@ describe('create a new blog post', () => {
             url : 'http:/www.website.com',
             likes: 0,
         }
-
         
         await api   
             .post('/api/blogs')
@@ -94,16 +93,28 @@ describe('create a new blog post', () => {
             .expect('Content-Type', /application\/json/)
     
         const response = await api.get('/api/blogs')
+
         expect(response.body).toEqual(
             expect.arrayContaining([
                 expect.objectContaining(expectedBlog)]))
     })
 
-})
+    test('blog without title or url is not added', async () => {
+        const newBlog = {
+            author: 'Loredana',
+            likes: 1
+        }
+        
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(400)
 
+        const response = await api.get('/api/blogs')
 
-
-    
+        expect(response.body).toHaveLength(initialBlogs.length)   
+    })
+}) 
 
 afterAll(() => {
     mongoose.connection.close()
