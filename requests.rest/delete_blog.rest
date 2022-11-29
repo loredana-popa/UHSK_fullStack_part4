@@ -1,0 +1,5 @@
+# DELETE  http://localhost:5000/api/blogs/638623a1af848edbe3ccda14
+
+# DELETE http://localhost:5000/api/blogs/NotanID
+
+DELETE http://localhost:5000/api/blogs/1
