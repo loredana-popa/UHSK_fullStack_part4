@@ -9,11 +9,13 @@ beforeEach(async () => {
     await Blog.deleteMany({})
     console.log('cleared')
 
-    helper.initialBlogs.forEach(async (blog) => {
-        let blogObject = new Blog(blog)
-        await blogObject.save()
-        console.log('saved')
-    })
+    const blogObjects = helper.initialBlogs
+        .map(blog =>  new Blog(blog))
+
+    const promiseAll = blogObjects.map(blog => blog.save())
+    console.log('saved')
+
+    await Promise.all(promiseAll)
     console.log('done')
 })
 
@@ -30,7 +32,9 @@ test('all blogs are returned', async () => {
     expect(response.body).toHaveLength(helper.initialBlogs.length)
 })
 
+// NOTE!! test to be revised task 4.9*: Blog list tests, step2
 test('the unique identifier property of the blog posts is named id', async () => {
+    console.log('test to be revised')
     const response = await api.get('/api/blogs')
 
     const body = response.body
