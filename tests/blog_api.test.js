@@ -1,25 +1,26 @@
-const mongoose = require('mongoose')
 const supertest = require('supertest')
+const mongoose = require('mongoose')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
+
 const Blog = require('../models/blog')
 
-beforeEach(async () => {
-    await Blog.deleteMany({})
-    // console.log('cleared')
-
-    const blogObjects = helper.initialBlogs
-        .map(blog =>  new Blog(blog))
-
-    const promiseAll = blogObjects.map(blog => blog.save())
-    // console.log('saved')
-
-    await Promise.all(promiseAll)
-    // console.log('done')
-})
-
 describe('when there are some blogs in the DB', () => {
+    beforeEach(async () => {
+        await Blog.deleteMany({})
+        // console.log('cleared')
+
+        const blogObjects = helper.initialBlogs
+            .map(blog =>  new Blog(blog))
+
+        const promiseAll = blogObjects.map(blog => blog.save())
+        // console.log('saved')
+
+        await Promise.all(promiseAll)
+        // console.log('done')
+    })
+
     test('blogs are returned as json', async () => {
         await api
             .get('/api/blogs')
@@ -46,6 +47,7 @@ describe('when there are some blogs in the DB', () => {
 
 
 describe('addition of a new blog post', () => {
+
     test('succeeds with valid data', async () => {
         const newBlog = {
             title: 'Create a new blog',
@@ -124,6 +126,28 @@ describe('deletion of a blog', () => {
 
         const idArr = blogsAtEnd.map(r => r.id)
         expect(idArr).not.toContain(blogToDelete.id)
+    })
+})
+
+describe('update a blog', () => {
+    test('succeeds if data is valid', async () => {
+        const blogsAtStart = await helper.blogsInDb()
+        const blogToUpdate = blogsAtStart[0]
+
+        const expectedBlog = {...blogToUpdate, likes : 1111111111111111}
+  
+        await api
+            .put(`/api/blogs/${blogToUpdate.id}`)
+            .send(expectedBlog)
+            .expect(200)
+
+        const blogsAtEnd = await helper.blogsInDb()  
+        console.log('blogs at end are', blogsAtEnd)  
+
+        expect(blogsAtEnd).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining(expectedBlog)]))
+        
     })
 })
 

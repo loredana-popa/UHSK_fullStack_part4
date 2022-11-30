@@ -1,0 +1,9 @@
+PUT http://localhost:5000/api/blogs/6384f886dd6754de75f3c7ee
+Content-Type: application/json
+
+{
+    "title": "blog 2",
+    "author": "Loredana",
+    "url": "www.website2.com",
+    "likes": 10
+}
