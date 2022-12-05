@@ -1,9 +1,10 @@
 POST http://localhost:5000/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1sdXVrYWkiLCJpZCI6IjYzOGEwMWM2OWVkYmU3Nzc1OGUzYWVmOCIsImlhdCI6MTY3MDI1NDYxMX0.vnpqBMDRnoP921Azj7mFnvW1XVj3uumEJR5LWl8ZNjE
 
 {
-    "title": "blog 4",
+    "title": "blog 5",
     "author": "Loredana",
-    "url": "www.website4.com",
+    "url": "www.website5.com",
     "likes": 1
 }
