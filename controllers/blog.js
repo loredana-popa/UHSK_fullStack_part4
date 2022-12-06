@@ -3,23 +3,24 @@ const { default: mongoose } = require('mongoose')
 const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const middleware = require ('../utils/middleware')
+
+const logger = require('../utils/logger')
 
 blogsRouter.get('/', async (request, response) => {
     const blogs = await Blog.find({}).populate('user', { username: 1, name: 1} )
     response.json(blogs)
 })
-const getTokenFrom = request => {
-    const authorization = request.get('authorization')
-    if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-        return authorization.substring(7)
-    }
-    return null
-}
+
+// logger.info('post request step -1')
 
 blogsRouter.post('/',  async (request, response) => {
+
     const body = request.body
-    const token = getTokenFrom(request)
+    const token = middleware.tokenExtractor(request)
     const decodedToken = jwt.verify(token, process.env.SECRET)
+    logger.info('dekodedToken is', decodedToken)
+    logger.info('dekodedToken ID is', decodedToken.id)
 
     if (!decodedToken.id) {
         return response.status(401).json({ error: 'token missing or invalid' })

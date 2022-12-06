@@ -8,6 +8,19 @@ const requestLogger = (request, response, next) => {
     next()
 }
 
+const tokenExtractor = (request, response, next) => {
+    const authorization = request.get('authorization')
+    logger.info('authorization', authorization)
+
+    if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+        return authorization.substring(7)
+        // logger.info('token extraction succeeded', authorization.substring(7))
+    } 
+    
+    next()
+}
+
+
 const errorHandler = (error, request, response, next) => {
     logger.error(error.message)
   
@@ -25,5 +38,6 @@ const errorHandler = (error, request, response, next) => {
   
 module.exports = {
     requestLogger,
+    tokenExtractor,
     errorHandler
 }
