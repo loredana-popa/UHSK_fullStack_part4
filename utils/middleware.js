@@ -10,12 +10,12 @@ const requestLogger = (request, response, next) => {
 
 const tokenExtractor = (request, response, next) => {
     const authorization = request.get('authorization')
-    logger.info('authorization', authorization)
-
+    
     if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
         return authorization.substring(7)
-        // logger.info('token extraction succeeded', authorization.substring(7))
-    } 
+    } else if (!authorization) {
+        return null
+    }
     
     next()
 }
