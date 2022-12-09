@@ -24,7 +24,7 @@ blogsRouter.post('/',  async (request, response) => {
     }
 
     const user = await User.findById(decodedToken.id)
-    
+
     const blog = new Blog({
         title: body.title,
         author: body.author,
@@ -32,21 +32,17 @@ blogsRouter.post('/',  async (request, response) => {
         likes: body.likes,
         user: user._id
     })
-
     const savedBlog = await blog.save()
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
 
-    response.status(201).json(savedBlog)
-    
+    response.status(201).json(savedBlog) 
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
     const blog = await Blog.findById(request.params.id)
 
-    const token = middleware.tokenExtractor(request)
-    const decodedToken = jwt.verify(token, process.env.SECRET)
-    const userid = decodedToken.id
+    const userid = middleware.userExtractor(request)
 
     if (!userid) {
         return response.status(401).json({ error: 'token missing or invalid' })

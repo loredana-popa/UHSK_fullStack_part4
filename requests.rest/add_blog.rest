@@ -3,8 +3,8 @@ Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbGxhcyIsImlkIjoiNjM4Zjc1ZGI5OTFiMTViYmI1OGE5YTRjIiwiaWF0IjoxNjcwMzQ2Mjg1fQ.nzRdcf1sIXqzBij22oT5h3QPwOrzu1VhzrnxulTMh2Y
 
 {
-    "title": "Blog title nr 3",
-    "author": "Loredana",
+    "title": "Blog title nr 4",
+    "author": "abcd",
     "url": "www.website.com",
-    "likes": 2
+    "likes": 5
 }
