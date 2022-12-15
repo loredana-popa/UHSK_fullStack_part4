@@ -37,12 +37,17 @@ describe('when there are some blogs in the DB', () => {
     
     // NOTE!! test to be revised task 4.9*: Blog list tests, step2
     test('the unique identifier property of the blog posts is named id', async () => {
-        console.log('test to be revised')
-        const response = await api.get('/api/blogs')
-    
-        const body = response.body
-      
-        expect(body).toBeDefined()
+
+        await api
+            .get('/api/blogs')
+            .expect(200)
+            .expect('Content-type', /application\/json/)
+
+        const blogs =  await Blog.find({})
+
+        blogs.forEach((blog) => {
+            expect(blog.id).toBeDefined()
+        })
     })
 })
 
@@ -162,7 +167,7 @@ describe('addition of a new blog post', () => {
     })
 
     describe('POST blog fails with status 400 ', () => {
-        
+
         test('fails if data invalid', async () => {
         // create a newUser and save it in testDB
             const newUser = {
