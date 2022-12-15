@@ -11,12 +11,16 @@ const requestLogger = (request, response, next) => {
 }
 
 const tokenExtractor = (request, response, next) => {
-    const authorization = request.get('authorization')
-    // logger.info('authorization is', authorization)
+    // logger.info('headers', request.headers)
+    const authHeader = request.headers['authorization']
+    // logger.info('auth header is:', authHeader)
 
-    if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-        return authorization.substring(7)
-    } else if (!authorization) {
+    const token = authHeader.substring(7)
+    // logger.info('token', token)
+    
+    if (authHeader && authHeader.toLowerCase().startsWith('bearer ')) {
+        return token
+    } else if (!authHeader) {
         return null 
     }
     
@@ -31,8 +35,6 @@ const userExtractor = (request, response, next) => {
 }
 
 
-
-
 const errorHandler = (error, request, response, next) => {
     logger.error(error.message)
   
@@ -42,7 +44,6 @@ const errorHandler = (error, request, response, next) => {
         return response.status(400).json({ error: 'malformed id' })
     } else if (error.name === 'JsonWebTokenError') {
         return response.status(400).json({ error: 'invalid token' })
-
     }
   
     next(error)

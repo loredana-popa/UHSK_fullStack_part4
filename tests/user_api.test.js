@@ -42,7 +42,7 @@ describe('creation of a new user', () => {
         const newUser = {
             username: 'mluukai',
             name: 'Matti Lukkainen',
-            password: 'password2',
+            password: 'password4',
         }
     
         await api   
